@@ -1,0 +1,30 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+dist
+/dist
+server/node_modules/**
+server/package-lock.json
+server/build/**
+server/.env
+# testing
+/coverage
+ 
+
+# misc
+client/.env
+client/.env.local
+client/.env.development.local
+ 
+client/node_modules/**
+client/package-lock.json
+client/build/**
+
+client/package-lock.json
+client/yarn-lock.json
+
+package-lock.json
+yarn-lock.json
+
+
+
