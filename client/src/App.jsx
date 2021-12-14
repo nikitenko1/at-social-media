@@ -6,14 +6,14 @@ import Login from './pages/login';
 import Alert from './components/alert/Alert';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { refreshtoken } from './redux/actions/authAction';
+import { refreshToken } from './redux/actions/authAction';
 
 const App = () => {
   const { auth } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(refreshtoken());
+    dispatch(refreshToken());
   }, [dispatch]);
   return (
     <>
