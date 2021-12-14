@@ -2,7 +2,7 @@ import { TYPES } from '../actions/_types';
 
 const initialState = {};
 
-const notifyReducer = (state = initialState, action) => {
+const alertReducer = (state = initialState, action) => {
   switch (action.type) {
     case TYPES.ALERT:
       return action.payload;
@@ -11,4 +11,4 @@ const notifyReducer = (state = initialState, action) => {
   }
 };
 
-export default notifyReducer;
+export default alertReducer;
