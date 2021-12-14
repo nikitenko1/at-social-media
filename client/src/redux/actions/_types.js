@@ -1,4 +1,4 @@
 export const TYPES = {
   AUTH: 'AUTH',
-  NOTIFY: 'NOTIFY',
+  ALERT: 'ALERT',
 };
