@@ -21,6 +21,8 @@ const authCtrl = {
           .status(400)
           .json({ msg: 'Password must be at least 6 characters' });
 
+      const passwordHash = await bcrypt.hash(password, 12);
+
       const newUser = new Users({
         fullname,
         username: newUserName,
@@ -28,8 +30,6 @@ const authCtrl = {
         password: passwordHash,
         gender,
       });
-
-      const passwordHash = await bcrypt.hash(password, 12);
 
       const access_token = createAccessToken({ id: newUser._id });
       const refresh_token = createRefreshToken({ id: newUser._id });
@@ -43,7 +43,7 @@ const authCtrl = {
       await newUser.save();
 
       res.json({
-        msg: 'Registered successfully',
+        msg: 'SignUp Success!',
         access_token,
         user: {
           ...newUser._doc,
@@ -124,10 +124,14 @@ const authCtrl = {
 };
 
 const createAccessToken = (payload) => {
-  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '1d',
+  });
 };
 const createRefreshToken = (payload) => {
-  jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: '7d',
+  });
 };
 
 module.exports = authCtrl;
