@@ -174,7 +174,7 @@ const Register = () => {
         <p className="my-2 text-end">
           Already have an account?{' '}
           <span>
-            <Link to="/login" style={{ color: 'tomato' }}>
+            <Link to="/" style={{ color: 'tomato' }}>
               Login
             </Link>
           </span>

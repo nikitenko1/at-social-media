@@ -70,3 +70,18 @@ export const register = (data) => async (dispatch) => {
     dispatch({ type: TYPES.ALERT, payload: { error: err.response.data.msg } });
   }
 };
+
+export const logout = () => async (dispatch) => {
+  try {
+    localStorage.removeItem('firstLogin');
+    await postDataAPI('logout');
+    window.location.href = '/';
+  } catch (err) {
+    dispatch({
+      type: TYPES.ALERT,
+      payload: {
+        error: err.response.data.msg,
+      },
+    });
+  }
+};
