@@ -4,7 +4,7 @@ const initialState = {};
 
 const notifyReducer = (state = initialState, action) => {
   switch (action.type) {
-    case TYPES.NOTIFY:
+    case TYPES.ALERT:
       return action.payload;
     default:
       return state;

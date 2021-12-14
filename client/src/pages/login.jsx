@@ -28,8 +28,10 @@ const Login = () => {
     <div className="auth_page">
       <form onSubmit={handleSubmit}>
         <h3 className="text-uppercase text-center mb-4">Social Media</h3>
-        <div className="form-group">
-          <label htmlFor="exampleInputEmail1">Email address</label>
+        <div className="mb-3">
+          <label className="form-label" htmlFor="exampleInputEmail1">
+            Email address
+          </label>
           <input
             type="email"
             className="form-control"
@@ -42,8 +44,10 @@ const Login = () => {
             We'll never share your email with anyone else.
           </small>
         </div>
-        <div className="form-group">
-          <label htmlFor="exampleInputPassword1">Password</label>
+        <div className="mb-3">
+          <label className="form-label" htmlFor="exampleInputPassword1">
+            Password
+          </label>
           <div className="pass">
             <input
               type={typePass ? 'text' : 'password'}
@@ -66,6 +70,7 @@ const Login = () => {
         >
           Login
         </button>
+
         <p className="my-2 text-end">
           Don't have an account?{' '}
           <span>
