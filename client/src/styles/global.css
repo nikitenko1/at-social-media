@@ -39,11 +39,7 @@ a {
   text-decoration: none;
 }
 
-.avatar {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-}
+
 
 /* -------- AUTH ---------- */
 @import url('./auth.css');
@@ -51,3 +47,5 @@ a {
 @import url('./loading.css');
 /* -------- HEADER ---------- */
 @import url('./header.css');
+/* -------- AVATAR ---------- */
+@import url('./avatar.css');

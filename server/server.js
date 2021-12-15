@@ -12,6 +12,7 @@ app.use(morgan('dev'));
 
 // Routes
 app.use('/api', require('./routes/authRouter'));
+app.use('/api', require('./routes/userRouter'));
 
 // Cloud Mongodb Atlas
 require('./db');
