@@ -75,3 +75,11 @@
   overflow: auto;
   margin-top: 3px;
 }
+.header .search_form .loading {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 15px;
+  height: 15px;
+  transform: translateY(-50%);
+}

@@ -9,7 +9,7 @@ const Header = () => {
         className="navbar navbar-expand-lg navbar-light 
             justify-content-between align-middle"
       >
-        <Link href="/" className="logo mx-2">
+        <Link to="/" className="logo mx-2">
           <h2 className="navbar-brand">Social Media</h2>
         </Link>
         <Search />
