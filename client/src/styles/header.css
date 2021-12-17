@@ -19,6 +19,9 @@
 .header .menu li {
   opacity: 0.5;
 }
+.header .menu li:hover {
+  opacity: 1;
+}
 .header .menu li.active {
   opacity: 1;
 }

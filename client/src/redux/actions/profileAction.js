@@ -1,10 +1,12 @@
 import { getDataAPI, patchDataAPI } from '../../utils/fetchData';
 import { imageUpload } from '../../utils/imageUpload';
-import { TYPES } from './_types';
+import { TYPES, DeleteData } from './_types';
 
 export const PROFILE_TYPES = {
   LOADING: 'LOADING',
   GET_USER: 'GET_USER',
+  FOLLOW: 'FOLLOW',
+  UNFOLLOW: 'UNFOLLOW',
 };
 
 export const getProfileUsers =
@@ -26,7 +28,7 @@ export const getProfileUsers =
   };
 
 export const updateProfileUser =
-  ({ userData, avatar, auth  }) =>
+  ({ userData, avatar, auth }) =>
   async (dispatch) => {
     if (!userData.fullname)
       return dispatch({
@@ -78,4 +80,42 @@ export const updateProfileUser =
         payload: { error: err.response.data.msg },
       });
     }
+  };
+
+export const follow =
+  ({ user, auth }) =>
+  async (dispatch) => {
+    let newUser = { ...user, followers: [...user.followers, auth.user] };
+
+    dispatch({ type: PROFILE_TYPES.FOLLOW, payload: newUser });
+
+    dispatch({
+      type: TYPES.AUTH,
+      payload: {
+        ...auth,
+        user: { ...auth.user, following: [...auth.user.following, newUser] },
+      },
+    });
+  };
+
+export const unfollow =
+  ({ user, auth }) =>
+  async (dispatch) => {
+    let newUser = {
+      ...user,
+      followers: DeleteData(user.followers, auth.user._id),
+    };
+
+    dispatch({ type: PROFILE_TYPES.FOLLOW, payload: newUser });
+
+    dispatch({
+      type: TYPES.AUTH,
+      payload: {
+        ...auth,
+        user: {
+          ...auth.user,
+          following: DeleteData(auth.user.following, newUser._id),
+        },
+      },
+    });
   };
