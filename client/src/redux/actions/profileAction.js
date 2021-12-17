@@ -83,9 +83,18 @@ export const updateProfileUser =
   };
 
 export const follow =
-  ({ user, auth }) =>
+  ({ users, user, auth }) =>
   async (dispatch) => {
-    let newUser = { ...user, followers: [...user.followers, auth.user] };
+    let newUser;
+    if (users.every((item) => item._id !== user._id)) {
+      newUser = { ...user, followers: [...user.followers, auth.user] };
+    } else {
+      users.forEach((item) => {
+        if (item._id === user._id) {
+          newUser = { ...item, followers: [...item.followers, auth.user] };
+        }
+      });
+    }
 
     dispatch({ type: PROFILE_TYPES.FOLLOW, payload: newUser });
 
@@ -96,15 +105,36 @@ export const follow =
         user: { ...auth.user, following: [...auth.user.following, newUser] },
       },
     });
+
+    try {
+      await patchDataAPI(`user/${user._id}/follow`, null, auth.token);
+    } catch (err) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
   };
 
 export const unfollow =
-  ({ user, auth }) =>
+  ({ users, user, auth }) =>
   async (dispatch) => {
-    let newUser = {
-      ...user,
-      followers: DeleteData(user.followers, auth.user._id),
-    };
+    let newUser;
+    if (users.every((item) => item._id !== user._id)) {
+      newUser = {
+        ...user,
+        followers: DeleteData(user.followers, auth.user._id),
+      };
+    } else {
+      users.forEach((item) => {
+        if (item._id === user._id) {
+          newUser = {
+            ...item,
+            followers: DeleteData(item.followers, auth.user._id),
+          };
+        }
+      });
+    }
 
     dispatch({ type: PROFILE_TYPES.FOLLOW, payload: newUser });
 
@@ -118,4 +148,13 @@ export const unfollow =
         },
       },
     });
+
+    try {
+      await patchDataAPI(`user/${user._id}/unfollow`, null, auth.token);
+    } catch (err) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
   };
