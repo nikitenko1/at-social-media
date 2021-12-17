@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import { getProfileUsers } from '../../redux/actions/profileAction';
 import EditProfile from './EditProfile';
 import FollowBtn from '../FollowBtn';
+import Following from '../Following';
+import Followers from '../Followers';
 
 const Info = () => {
   const { id } = useParams();
@@ -13,6 +15,8 @@ const Info = () => {
 
   const [userData, setUserData] = useState([]);
   const [onEdit, setOnEdit] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -49,6 +53,7 @@ const Info = () => {
                 className={classNames('mr-3', {
                   'text-danger': user.followers.length === 0,
                 })}
+                onClick={() => setShowFollowers(true)}
               >
                 {user.followers.length} Followers
               </span>
@@ -56,6 +61,7 @@ const Info = () => {
                 className={classNames('mx-3', {
                   'text-danger': user.following.length === 0,
                 })}
+                onClick={() => setShowFollowing(true)}
               >
                 {user.following.length} Following
               </span>
@@ -82,6 +88,19 @@ const Info = () => {
             <p>{user.story}</p>
           </div>
           {onEdit && <EditProfile setOnEdit={setOnEdit} />}
+
+          {showFollowers && (
+            <Followers
+              users={user.followers}
+              setShowFollowers={setShowFollowers}
+            />
+          )}
+          {showFollowing && (
+            <Following
+              users={user.following}
+              setShowFollowing={setShowFollowing}
+            />
+          )}
         </div>
       ))}
     </div>
