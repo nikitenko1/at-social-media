@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { getProfileUsers } from '../../redux/actions/profileAction';
 import EditProfile from './EditProfile';
 import FollowBtn from '../FollowBtn';
+
 const Info = () => {
   const { id } = useParams();
   const { auth, profile } = useSelector((state) => state);
@@ -40,7 +41,7 @@ const Info = () => {
                   Edit Profile
                 </button>
               ) : (
-                <FollowBtn />
+                <FollowBtn user={user} />
               )}
             </div>
             <div className="follow_btn">
