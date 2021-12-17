@@ -37,6 +37,7 @@ const Search = () => {
     <>
       <form className="search_form" onSubmit={handleSearch}>
         <input
+          title="Enter to search ..."
           id="search"
           type="text"
           name="search"
@@ -47,7 +48,7 @@ const Search = () => {
         />
         <div className="search_icon" style={{ opacity: search ? 0 : 0.3 }}>
           <span className="material-icons">search</span>
-          <span>search</span>
+          <span>Enter to search ...</span>
         </div>
         <div
           className="close_search"
