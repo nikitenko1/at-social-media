@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '../Avatar';
 import classNames from 'classnames';
@@ -61,7 +61,7 @@ const Info = () => {
             </div>
             <h6 className="text-lead">{user.fullname}</h6>
             {user.mobile ? (
-              <p>{user.mobile}</p>
+              <p className="text-danger">{user.mobile}</p>
             ) : (
               <p className="text-muted">No mobile</p>
             )}
@@ -72,7 +72,7 @@ const Info = () => {
             )}
             <h6>{user.email}</h6>
             {user.website ? (
-              <a href={user.website} target="_blank" rel="noreferrer">
+              <a href={user.website} target="_blank" rel="noopener noreferrer">
                 {user.website}
               </a>
             ) : (
