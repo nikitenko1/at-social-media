@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import { getProfileUsers } from '../../redux/actions/profileAction';
 import EditProfile from './EditProfile';
 import FollowBtn from '../FollowBtn';
-import Following from '../Following';
-import Followers from '../Followers';
+import Following from './Following';
+import Followers from './Followers';
 
 const Info = () => {
   const { id } = useParams();
