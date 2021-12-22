@@ -16,7 +16,12 @@ export const imageUpload = async (images) => {
   let imgArr = [];
   for (const item of images) {
     const formData = new FormData();
-    formData.append('file', item);
+    if (item.camera) {
+      formData.append('file', item.camera);
+    } else {
+      formData.append('file', item);
+    }
+
     formData.append('upload_preset', process.env.REACT_APP_C_UPDATE_PRESET);
     formData.append('cloud_name', process.REACT_APP_C_NAME);
 

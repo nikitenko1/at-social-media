@@ -1,6 +1,7 @@
 import { TYPES } from '../redux/actions/_types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useRef } from 'react';
+import { createPost } from '../redux/actions/postAction';
 
 const StatusModal = () => {
   const [content, setContent] = useState('');
@@ -72,12 +73,30 @@ const StatusModal = () => {
   };
 
   const handleStopStream = () => {
-    // tracks.stop();
+    if (tracks) tracks.stop();
     setStream(false);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (images.length === 0) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: 'Please add your pfoto.' },
+      });
+    }
+    dispatch(createPost({ content, images, auth }));
+    setContent('');
+    setImages([]);
+    if (tracks) tracks.stop();
+    dispatch({
+      type: TYPES.STATUS,
+      payload: false,
+    });
   };
   return (
     <div className="status_modal">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="status_header">
           <h5 className="m-0">Create Post</h5>
           <span
@@ -146,7 +165,9 @@ const StatusModal = () => {
           </div>
         </div>
         <div className="status_footer my-2 ">
-          <button className="btn btn-outline-secondary w-100">Post</button>
+          <button className="btn btn-outline-secondary w-100" type="submit">
+            Post
+          </button>
         </div>
       </form>
     </div>
