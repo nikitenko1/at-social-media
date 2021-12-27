@@ -11,6 +11,7 @@ import StatusModal from './components/StatusModal';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { refreshToken } from './redux/actions/authAction';
+import { getPosts } from './redux/actions/postAction';
 
 const App = () => {
   const { auth, status } = useSelector((state) => state);
@@ -19,6 +20,10 @@ const App = () => {
   useEffect(() => {
     dispatch(refreshToken());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (auth.token) dispatch(getPosts(auth.token));
+  }, [dispatch, auth.token]);
   return (
     <>
       <Alert />
