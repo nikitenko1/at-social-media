@@ -10,7 +10,12 @@ const Header = () => {
             justify-content-between align-middle"
       >
         <Link to="/" className="logo mx-2">
-          <h2 className="navbar-brand">Social Media</h2>
+          <h2
+            className="navbar-brand"
+            onClick={() => window.scrollTo({ top: 0 })}
+          >
+            Social Media
+          </h2>
         </Link>
         <Search />
         <Menu />

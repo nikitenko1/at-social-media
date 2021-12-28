@@ -8,6 +8,7 @@ import EditProfile from './EditProfile';
 import FollowBtn from '../FollowBtn';
 import Following from './Following';
 import Followers from './Followers';
+import { TYPES } from '../../redux/actions/_types';
 
 const Info = () => {
   const { id } = useParams();
@@ -29,6 +30,13 @@ const Info = () => {
     }
   }, [id, auth, dispatch, profile.users]);
 
+  useEffect(() => {
+    if (showFollowers || showFollowing || onEdit) {
+      dispatch({ type: TYPES.MODAL, payload: true });
+    } else {
+      dispatch({ type: TYPES.MODAL, payload: false });
+    }
+  }, [dispatch, onEdit, showFollowers, showFollowing]);
   return (
     <div className="info">
       {userData.map((user) => (
