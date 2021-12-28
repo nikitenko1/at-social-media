@@ -1,17 +1,11 @@
 import React from 'react';
-import CardHeader from './post/CardHeader';
-import CardBody from './post/CardBody';
-import CardFooter from './post/CardFooter';
+import PostCard from '../PostCard';
 
 const Posts = ({ homePosts }) => {
   return (
     <div className="posts">
-      {homePosts.posts.map((p) => (
-        <div key={p._id} className="card my-3">
-          <CardHeader post={p} />
-          <CardBody post={p} />
-          <CardFooter post={p} />
-        </div>
+      {homePosts.posts.map((post) => (
+        <PostCard key={post._id} post={post} />
       ))}
     </div>
   );

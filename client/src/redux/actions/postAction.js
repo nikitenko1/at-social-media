@@ -134,12 +134,12 @@ export const unLikePost =
       likes: post.likes.filter((like) => like._id !== auth.user._id),
     };
     dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
-    // try {
-    //   await patchDataAPI(`post/${post._id}/unlike`, null, auth.token);
-    // } catch (error) {
-    //   dispatch({
-    //     type: TYPES.ALERT,
-    //     payload: { error: error.response.data.msg },
-    //   });
-    // }
+    try {
+      await patchDataAPI(`post/${post._id}/unlike`, null, auth.token);
+    } catch (error) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: error.response.data.msg },
+      });
+    }
   };

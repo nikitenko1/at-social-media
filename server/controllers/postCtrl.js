@@ -44,7 +44,12 @@ const postCtrl = {
       const post = await Posts.findOneAndUpdate(
         { _id: req.params.id },
         { content, images }
-      ).populate('user likes', 'avatar username fullname');
+      )
+        .populate('user likes', 'avatar username fullname')
+        .populate({
+          path: 'comments',
+          populate: { path: 'user likes', select: '-password' },
+        });
 
       res.json({
         msg: 'Updated Success',

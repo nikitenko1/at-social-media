@@ -53,6 +53,8 @@ a {
 @import url('./home.css');
 /* -------- STATUS_MODAL ---------- */
 @import url('./status_modal.css');
+/* -------- COMMENTS ---------- */
+@import url('./comments.css');
 
 .mode {
   width: 100%;
