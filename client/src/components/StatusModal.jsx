@@ -1,9 +1,21 @@
 import { TYPES } from '../redux/actions/_types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useRef } from 'react';
-import { createPost } from '../redux/actions/postAction';
+
+import { useState, useRef, useEffect } from 'react';
+import { createPost, updatePost } from '../redux/actions/postAction';
 
 const StatusModal = () => {
+  //
+  const { auth, theme, status } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  //
+  useEffect(() => {
+    if (status.onEdit) {
+      setContent(status.content);
+      setImages(status.images);
+    }
+  }, [status]);
+  //
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [stream, setStream] = useState(false);
@@ -11,9 +23,6 @@ const StatusModal = () => {
   //
   const videoRef = useRef();
   const refCanvas = useRef();
-  //
-  const { auth, theme } = useSelector((state) => state);
-  const dispatch = useDispatch();
 
   const handleChangeImages = (e) => {
     const files = [...e.target.files];
@@ -85,7 +94,12 @@ const StatusModal = () => {
         payload: { error: 'Please add your pfoto.' },
       });
     }
-    dispatch(createPost({ content, images, auth }));
+    if (status.onEdit) {
+      dispatch(updatePost({ content, images, auth, status }));
+    } else {
+      dispatch(createPost({ content, images, auth }));
+    }
+
     setContent('');
     setImages([]);
     if (tracks) tracks.stop();
@@ -117,7 +131,13 @@ const StatusModal = () => {
               <div key={index} id="file_img">
                 <img
                   className="img-thumbnail"
-                  src={img.camera ? img.camera : URL.createObjectURL(img)}
+                  src={
+                    img.camera
+                      ? img.camera
+                      : img.url
+                      ? img.url
+                      : URL.createObjectURL(img)
+                  }
                   alt="images"
                   style={{ filter: theme ? 'invert(1)' : 'invert(-1)' }}
                 />

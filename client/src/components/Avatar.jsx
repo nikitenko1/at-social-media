@@ -1,6 +1,7 @@
-import React from 'react';
+import { useSelector } from 'react-redux';
 
-const Avatar = ({ size, theme, src }) => {
+const Avatar = ({ size, src }) => {
+  const { theme } = useSelector((state) => state);
   return (
     <img
       src={src}

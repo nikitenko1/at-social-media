@@ -38,3 +38,33 @@
   display: flex;
   margin: 5px 0;
 }
+/* ------------- Post Card Body ------------- */
+.posts .card_body-content {
+  padding: 0 25px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+.posts .card_body-content .readMore {
+  color: crimson;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 1rem;
+}
+/* ------------- Post Card Footer ------------- */
+
+.posts .card_icon_menu {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 15px;
+  cursor: pointer;
+}
+.posts .card_icon_menu i {
+  font-size: 28px;
+  margin: 10px;
+}
+.posts .card_icon_menu img {
+  width: 28px;
+  height: 28px;
+  transform: translate(5px, -6px);
+  opacity: 0.9;
+}
