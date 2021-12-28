@@ -86,7 +86,7 @@ export const updatePost =
       if (imgNewUrl.length > 0) media = await imageUpload(imgNewUrl);
 
       const res = await patchDataAPI(
-        `posts/${status._id}`,
+        `post/${status._id}`,
         {
           content,
           images: [...imgOldUrl, ...media],
@@ -109,4 +109,37 @@ export const updatePost =
         payload: { error: error.response.data.msg },
       });
     }
+  };
+
+export const likePost =
+  ({ post, auth }) =>
+  async (dispatch) => {
+    const newPost = { ...post, likes: [...post.likes, auth.user] };
+    dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
+    try {
+      await patchDataAPI(`post/${post._id}/like`, null, auth.token);
+    } catch (error) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: error.response.data.msg },
+      });
+    }
+  };
+
+export const unLikePost =
+  ({ post, auth }) =>
+  async (dispatch) => {
+    const newPost = {
+      ...post,
+      likes: post.likes.filter((like) => like._id !== auth.user._id),
+    };
+    dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
+    // try {
+    //   await patchDataAPI(`post/${post._id}/unlike`, null, auth.token);
+    // } catch (error) {
+    //   dispatch({
+    //     type: TYPES.ALERT,
+    //     payload: { error: error.response.data.msg },
+    //   });
+    // }
   };
