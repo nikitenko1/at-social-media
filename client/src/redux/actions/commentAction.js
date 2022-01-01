@@ -1,5 +1,9 @@
 import { TYPES, EditData, DeleteData } from './_types';
-import { patchDataAPI, postDataAPI } from '../../utils/fetchData';
+import {
+  patchDataAPI,
+  postDataAPI,
+  deleteDataAPI,
+} from '../../utils/fetchData';
 import { POST_TYPES } from './postAction';
 
 export const createComment =
@@ -9,7 +13,11 @@ export const createComment =
     dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
 
     try {
-      const data = { ...newComment, postId: post._id };
+      const data = {
+        ...newComment,
+        postId: post._id,
+        postUserId: post.user._id,
+      };
       const res = await postDataAPI('comment', data, auth.token);
       const newData = { ...res.data.newComment, user: auth.user };
       const newPost = { ...post, comments: [...post.comments, newData] };
@@ -73,6 +81,33 @@ export const unLikeComment =
 
     try {
       await patchDataAPI(`/comment/${comment._id}/unlike`, null, auth.token);
+    } catch (err) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };
+
+export const deleteComment =
+  ({ post, comment, auth }) =>
+  async (dispatch) => {
+    const deleteArr = [
+      ...post.comments.filter((cm) => cm.reply === comment._id),
+      comment,
+    ];
+    const newPost = {
+      ...post,
+      comments: post.comments.filter(
+        (cm) => !deleteArr.find((da) => cm._id === da._id)
+      ),
+    };
+    dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
+
+    try {
+      deleteArr.forEach((item) => {
+        deleteDataAPI(`comment/${item._id}`, auth.token);
+      });
     } catch (err) {
       dispatch({
         type: TYPES.ALERT,

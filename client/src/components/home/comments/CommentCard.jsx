@@ -10,8 +10,9 @@ import {
   unLikeComment,
   updateComment,
 } from '../../../redux/actions/commentAction';
+import InputComment from '../InputComment';
 //
-const CommentCard = ({ comment, post }) => {
+const CommentCard = ({ children, comment, post, commentId }) => {
   const { auth } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [content, setContent] = useState('');
@@ -21,7 +22,23 @@ const CommentCard = ({ comment, post }) => {
   //
   const [isLike, setIsLike] = useState(false);
   const [loadLike, setLoadLike] = useState(false);
+  //
+  const [onReply, setOnReply] = useState(false);
 
+  //
+  const handleUpdate = () => {
+    if (comment.content !== content) {
+      dispatch(updateComment({ comment, post, content, auth }));
+      setOnEdit(false);
+    } else {
+      setOnEdit(false);
+    }
+  };
+  //
+  const handleReply = () => {
+    if (onReply) return setOnReply(false);
+    setOnReply({ ...comment, commentId });
+  };
   //
   const handleLike = async () => {
     if (loadLike) return;
@@ -41,19 +58,13 @@ const CommentCard = ({ comment, post }) => {
 
   useEffect(() => {
     setContent(comment.content);
+    setIsLike(false);
+    setOnReply(false);
     if (comment.likes.find((like) => like._id === auth.user._id)) {
       setIsLike(true);
     }
   }, [comment, auth.user]);
 
-  const  handleUpdate = () => {
-    if (comment.content !== content) {
-      dispatch(updateComment({ comment, post, content, auth }));
-      setOnEdit(false);
-    } else {
-      setOnEdit(false);
-    }
-  };
   const styleCard = {
     opacity: comment._id ? 1 : 0.5,
     pointerEvents: comment._id ? 'inherit' : 'none',
@@ -74,6 +85,11 @@ const CommentCard = ({ comment, post }) => {
             />
           ) : (
             <div>
+              {comment.tag && comment.tag._id !== comment.user._id && (
+                <Link to={`/profile/${comment.tag._id}`} className="me-1">
+                  @{comment.tag.username}
+                </Link>
+              )}
               <span>
                 {content.length < 100
                   ? content
@@ -110,7 +126,9 @@ const CommentCard = ({ comment, post }) => {
                 </small>
               </>
             ) : (
-              <small className="fw-bold me-3">reply</small>
+              <small className="fw-bold me-3" onClick={handleReply}>
+                {onReply ? 'cancel' : 'reply'}
+              </small>
             )}
           </div>
         </div>
@@ -118,12 +136,7 @@ const CommentCard = ({ comment, post }) => {
           className="d-flex align-items-center me-2"
           style={{ cursor: 'pointer' }}
         >
-          <CommentMenu
-            post={post}
-            comment={comment}
-            auth={auth}
-            setOnEdit={setOnEdit}
-          />
+          <CommentMenu post={post} comment={comment} setOnEdit={setOnEdit} />
           <LikeButton
             isLike={isLike}
             handleLike={handleLike}
@@ -131,6 +144,15 @@ const CommentCard = ({ comment, post }) => {
           />
         </div>
       </div>
+
+      {onReply && (
+        <InputComment post={post} onReply={onReply} setOnReply={setOnReply}>
+          <Link to={`/profile/${onReply.user._id}`} className="me-2">
+            @{onReply.user.username}:
+          </Link>
+        </InputComment>
+      )}
+      {children}
     </div>
   );
 };
