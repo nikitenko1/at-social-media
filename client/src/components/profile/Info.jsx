@@ -1,34 +1,32 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+// import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Avatar from '../Avatar';
 import classNames from 'classnames';
-import { getProfileUsers } from '../../redux/actions/profileAction';
 import EditProfile from './EditProfile';
 import FollowBtn from '../FollowBtn';
 import Following from './Following';
 import Followers from './Followers';
 import { TYPES } from '../../redux/actions/_types';
 
-const Info = () => {
-  const { id } = useParams();
-  const { auth, profile } = useSelector((state) => state);
+const Info = ({ auth, profile, id }) => {
+  const dispatch = useDispatch();
+  // const { id } = useParams();
+  // const { auth, profile } = useSelector((state) => state);
 
   const [userData, setUserData] = useState([]);
   const [onEdit, setOnEdit] = useState(false);
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (id === auth.user._id) {
       setUserData([auth.user]);
     } else {
-      dispatch(getProfileUsers({ users: profile.users, id, auth }));
       const newData = profile.users.filter((user) => user._id === id);
       setUserData(newData);
     }
-  }, [id, auth, dispatch, profile.users]);
+  }, [id, auth, profile.users]);
 
   useEffect(() => {
     if (showFollowers || showFollowing || onEdit) {

@@ -55,6 +55,8 @@ a {
 @import url('./status_modal.css');
 /* -------- COMMENTS ---------- */
 @import url('./comments.css');
+/* -------- DETAIL_POST ---------- */
+@import url('./post_thumb.css');
 
 .mode {
   width: 100%;
