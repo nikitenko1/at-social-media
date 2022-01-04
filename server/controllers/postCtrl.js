@@ -7,10 +7,10 @@ class APIfeatures {
     this.queryString = queryString;
   }
   paginating() {
-    const page = this.queryString.page * 1 || 1;
     // .limit: total records we wanted to show from the query
     // .skip: total records we wanted to skip from the query
-    const limit = this.queryString.limit * 1 || 3;
+    const page = this.queryString.page * 1 || 1;
+    const limit = this.queryString.limit * 1 || 9;
     const skip = (page - 1) * limit;
     this.query = this.query.skip(skip).limit(limit);
     return this;
@@ -162,16 +162,17 @@ const postCtrl = {
   //
   getPostsDiscover: async (req, res) => {
     try {
-      const features = new APIfeatures(
-        Posts.find({
-          // Syntax: { field: { $nin: [ <value1>, <value2> ... <valueN> ] } }
-          user: { $nin: [...req.user.following, req.user._id] },
-        }),
-        req.query
-      ).paginating();
-      const posts = await features.query.sort('-createdAt');
+      const newArr = [...req.user.following, req.user._id];
+      const num = req.query.num || 3;
 
-      res.json({
+      const posts = await Posts.aggregate([
+        { $match: { user: { $nin: newArr } } },
+        // Randomly selects the specified number of documents from the input documents
+        // { $sample: { size: <positive integer N> } }
+        { $sample: { size: Number(num) } },
+      ]);
+
+      return res.json({
         msg: 'Success!',
         result: posts.length,
         posts,

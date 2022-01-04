@@ -1,5 +1,4 @@
 import { DISCOVER_TYPES } from '../actions/discoverAction';
-import { EditData } from '../actions/_types';
 
 const initialState = {
   loading: false,
@@ -9,7 +8,7 @@ const initialState = {
   firstLoad: false,
 };
 
-const themeReducer = (state = initialState, action) => {
+const discoverReducer = (state = initialState, action) => {
   switch (action.type) {
     case DISCOVER_TYPES.LOADING:
       return { ...state, loading: action.payload };
@@ -32,4 +31,4 @@ const themeReducer = (state = initialState, action) => {
   }
 };
 
-export default themeReducer;
+export default discoverReducer;

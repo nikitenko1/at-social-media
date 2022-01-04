@@ -6,8 +6,10 @@ const initialState = { loading: false, result: 0, page: 2, posts: [] };
 const postReducer = (state = initialState, action) => {
   switch (action.type) {
     case POST_TYPES.CREATE_POST:
-      return { ...state, posts: [action.payload, ...state.posts] };
-
+      return {
+        ...state,
+        posts: [action.payload, ...state.posts],
+      };
     case POST_TYPES.LOADING_POST:
       return { ...state, loading: action.payload };
     case POST_TYPES.GET_POSTS:

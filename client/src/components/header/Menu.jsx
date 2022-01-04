@@ -30,7 +30,7 @@ const Menu = () => {
           </li>
         ))}
 
-        <li className="nav-item dropdown mx-2">
+        <li className="nav-item dropdown mx-2" style={{ opacity: 1 }}>
           <span
             className="nav-link dropdown-toggle"
             id="navbarDropdown"
