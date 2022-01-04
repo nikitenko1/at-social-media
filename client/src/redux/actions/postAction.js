@@ -170,9 +170,42 @@ export const getPost =
 export const deletePost =
   ({ post, auth }) =>
   async (dispatch) => {
-    await deleteDataAPI(`post/${post._id}`, auth.token);
-    dispatch({ type: POST_TYPES.DELETE_POST, payload: post });
     try {
+      await deleteDataAPI(`post/${post._id}`, auth.token);
+      dispatch({ type: POST_TYPES.DELETE_POST, payload: post });
+    } catch (error) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: error.response.data.msg },
+      });
+    }
+  };
+
+export const savePost =
+  ({ post, auth }) =>
+  async (dispatch) => {
+    const newUser = { ...auth.user, saved: [...auth.user.saved, post._id] };
+    dispatch({ type: TYPES.AUTH, payload: { ...auth, user: newUser } });
+    try {
+      await patchDataAPI(`savePost/${post._id}`, null, auth.token);
+    } catch (error) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: error.response.data.msg },
+      });
+    }
+  };
+
+export const unSavePost =
+  ({ post, auth }) =>
+  async (dispatch) => {
+    const newUser = {
+      ...auth.user,
+      saved: auth.user.saved.filter((id) => id !== post._id),
+    };
+    dispatch({ type: TYPES.AUTH, payload: { ...auth, user: newUser } });
+    try {
+      await patchDataAPI(`unSavePost/${post._id}`, null, auth.token);
     } catch (error) {
       dispatch({
         type: TYPES.ALERT,

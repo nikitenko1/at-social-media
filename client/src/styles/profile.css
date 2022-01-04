@@ -1,11 +1,16 @@
+.profile {
+  width: 100%;
+  min-height: 100vh;
+}
+/* ------------ info ------------- */
 .info {
   width: 100%;
   max-width: 800px;
   margin: auto;
   padding: 20px 10px;
-  box-shadow: 0px 10px 19px -8px rgba(0, 0, 0, 0.75);
-  -webkit-box-shadow: 0px 10px 19px -8px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 10px 19px -8px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 5px 10px -4px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0px 5px 10px -4px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 5px 10px -4px rgba(0, 0, 0, 0.75);
 }
 .info_container {
   display: flex;
@@ -137,4 +142,30 @@
   right: 10px;
   font-size: 2rem;
   cursor: pointer;
+}
+
+/* ------------ Saved Tab ------------- */
+.profile_tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.profile_tab button {
+  outline: none;
+  border: none;
+  background: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 5px 20px;
+  margin: 0 25px;
+  opacity: 0.5;
+}
+.profile_tab button.active {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  opacity: 0.8;
 }
