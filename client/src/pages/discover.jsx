@@ -22,7 +22,7 @@ const Discover = () => {
   const handleLoadMore = async () => {
     setLoad(true);
     const res = await getDataAPI(
-      `post_discover?limit=${discover.page * 3}`,
+      `post_discover?num=${discover.page * 3}`,
       auth.token
     );
     dispatch({

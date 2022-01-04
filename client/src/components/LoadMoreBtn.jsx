@@ -11,7 +11,7 @@ const LoadMoreBtn = ({ handleLoadMore, page, result, load }) => {
               onClick={handleLoadMore}
             >
               Load more
-            </button>
+            </button> 
           )}
     </>
   );
