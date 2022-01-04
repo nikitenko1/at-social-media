@@ -11,7 +11,7 @@ export const EditData = (data, id, post) => {
   return newData;
 };
 
-export const DeleteData = (data, id, post) => {
+export const DeleteData = (data, id) => {
   const newData = data.filter((item) => item._id !== id);
   return newData;
 };

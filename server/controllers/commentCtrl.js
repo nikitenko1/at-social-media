@@ -6,6 +6,15 @@ const commentCtrl = {
     try {
       const { tag, reply, content, postUserId, postId } = req.body;
 
+      const post = Posts.findById(postId);
+      if (!post)
+        return res.status(400).json({ msg: 'This post does not exist.' });
+
+      if (reply) {
+        const cm = Comments.findById(reply);
+        if (!cm)
+          return res.status(400).json({ msg: 'This comment does not exist.' });
+      }
       const newComment = new Comments({
         user: req.user._id,
         tag,

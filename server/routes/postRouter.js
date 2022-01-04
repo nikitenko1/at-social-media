@@ -9,6 +9,8 @@ router.patch('/post/:id', auth, postCtrl.updatePost);
 
 router.get('/post/:id', auth, postCtrl.getPost);
 
+router.delete('/post/:id', auth, postCtrl.deletePost);
+
 router.patch('/post/:id/like', auth, postCtrl.likePost);
 router.patch('/post/:id/unlike', auth, postCtrl.unLikePost);
 

@@ -18,7 +18,7 @@ const Home = () => {
           <Posts homePosts={homePosts} />
         )}
       </div>
-      <div className="col-md-4"></div>`
+      <div className="col-md-4">Right sidebar</div>
     </div>
   );
 };
