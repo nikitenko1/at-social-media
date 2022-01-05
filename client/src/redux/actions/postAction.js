@@ -17,7 +17,7 @@ export const POST_TYPES = {
 };
 
 export const createPost =
-  ({ content, images, auth }) =>
+  ({ content, images, auth, socket }) =>
   async (dispatch) => {
     let media = [];
     try {
@@ -119,10 +119,11 @@ export const updatePost =
   };
 
 export const likePost =
-  ({ post, auth }) =>
+  ({ post, auth, socket }) =>
   async (dispatch) => {
     const newPost = { ...post, likes: [...post.likes, auth.user] };
     dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
+    socket.emit('likePost', newPost);
     try {
       await patchDataAPI(`post/${post._id}/like`, null, auth.token);
     } catch (error) {
@@ -134,13 +135,15 @@ export const likePost =
   };
 
 export const unLikePost =
-  ({ post, auth }) =>
+  ({ post, auth, socket }) =>
   async (dispatch) => {
     const newPost = {
       ...post,
       likes: post.likes.filter((like) => like._id !== auth.user._id),
     };
     dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
+    socket.emit('unLikePost', newPost);
+
     try {
       await patchDataAPI(`post/${post._id}/unlike`, null, auth.token);
     } catch (error) {

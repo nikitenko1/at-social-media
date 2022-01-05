@@ -13,6 +13,9 @@ import { useEffect } from 'react';
 import { refreshToken } from './redux/actions/authAction';
 import { getPosts } from './redux/actions/postAction';
 import { getSuggestions } from './redux/actions/suggestionAction';
+import { io } from 'socket.io-client';
+import { TYPES } from './redux/actions/_types';
+import SocketClient from './SocketClient';
 
 const App = () => {
   const { auth, status, modal } = useSelector((state) => state);
@@ -20,6 +23,10 @@ const App = () => {
 
   useEffect(() => {
     dispatch(refreshToken());
+    //
+    const socket = io();
+    dispatch({ type: TYPES.SOCKET, payload: socket });
+    return () => socket.close();
   }, [dispatch]);
 
   useEffect(() => {
@@ -36,6 +43,7 @@ const App = () => {
         <div className="main">
           {auth.token && <Header />}
           {status && <StatusModal />}
+          {auth.token && <SocketClient />}
           <Route exact path="/" component={auth.token ? Home : Login} />
           <Route exact path="/register" component={Register} />
           <div className="wrap_page">

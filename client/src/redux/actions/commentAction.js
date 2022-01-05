@@ -7,7 +7,7 @@ import {
 import { POST_TYPES } from './postAction';
 
 export const createComment =
-  ({ post, newComment, auth }) =>
+  ({ post, newComment, auth, socket }) =>
   async (dispatch) => {
     const newPost = { ...post, comments: [...post.comments, newComment] };
     dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
@@ -22,6 +22,9 @@ export const createComment =
       const newData = { ...res.data.newComment, user: auth.user };
       const newPost = { ...post, comments: [...post.comments, newData] };
       dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
+
+      // Socket
+      socket.emit('createComment', newPost);
     } catch (err) {
       dispatch({
         type: TYPES.ALERT,
@@ -90,7 +93,7 @@ export const unLikeComment =
   };
 
 export const deleteComment =
-  ({ post, comment, auth }) =>
+  ({ post, comment, auth, socket }) =>
   async (dispatch) => {
     const deleteArr = [
       ...post.comments.filter((cm) => cm.reply === comment._id),
@@ -104,6 +107,8 @@ export const deleteComment =
     };
     dispatch({ type: POST_TYPES.UPDATED_POST, payload: newPost });
 
+    // Socket
+    socket.emit('deleteComment', newPost);
     try {
       deleteArr.forEach((item) => {
         deleteDataAPI(`comment/${item._id}`, auth.token);
