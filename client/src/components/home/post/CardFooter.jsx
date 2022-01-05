@@ -20,8 +20,7 @@ const CardFooter = ({ post }) => {
   const [saved, setSaved] = useState(false);
   const [saveLoad, setSaveLoad] = useState(false);
   //
-  const { theme } = useSelector((state) => state);
-  const { auth } = useSelector((state) => state);
+  const { auth, theme, socket } = useSelector((state) => state);
   // likes
   useEffect(() => {
     if (post.likes.find((like) => like._id === auth.user._id)) {
@@ -36,7 +35,7 @@ const CardFooter = ({ post }) => {
     if (loadLike) return;
 
     setLoadLike(true);
-    await dispatch(likePost({ post, auth }));
+    await dispatch(likePost({ post, auth, socket }));
     setLoadLike(false);
   };
 
@@ -44,7 +43,7 @@ const CardFooter = ({ post }) => {
     if (loadLike) return;
 
     setLoadLike(true);
-    await dispatch(unLikePost({ post, auth }));
+    await dispatch(unLikePost({ post, auth, socket }));
     setLoadLike(false);
   };
   // Saved
