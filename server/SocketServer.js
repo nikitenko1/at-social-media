@@ -7,7 +7,7 @@ const SocketServer = (socket) => {
       id,
       socketId: socket.id,
     });
-    console.log(users);
+    //  console.log(users);
   });
 
   socket.on('disconnect', () => {

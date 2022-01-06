@@ -28,7 +28,10 @@ const postCtrl = {
 
       res.json({
         msg: 'Create Post Success',
-        newPost,
+        newPost: {
+          ...newPost._doc,
+          user: req.user,
+        },
       });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
@@ -192,7 +195,13 @@ const postCtrl = {
       // $in use the following prototype: { field: { $in: [<value1>, <value2>, ... <valueN> ] } }
       await Comments.deleteMany({ _id: { $in: post.comments } });
 
-      res.json('Deleted Post!');
+      res.json({
+        msg: 'Deleted Post!',
+        newPost: {
+          ...post,
+          user: req.user,
+        },
+      });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
