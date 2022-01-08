@@ -3,16 +3,17 @@ import { Link, useLocation } from 'react-router-dom';
 import Avatar from '../Avatar';
 import { logout } from '../../redux/actions/authAction';
 import { TYPES } from '../../redux/actions/_types';
+import NotifyModal from '../NotifyModal';
 
 const Menu = () => {
   const navLinks = [
     { label: 'Home', icon: 'home', path: '/' },
     { label: 'Message', icon: 'near_me', path: '/message' },
     { label: 'Discover', icon: 'explore', path: '/discover' },
-    { label: 'Notify', icon: 'favorite', path: '/notify' },
+    // { label: 'Notify', icon: 'favorite', path: '/notify' },
   ];
 
-  const { auth, theme } = useSelector((state) => state);
+  const { auth, theme, notify } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   const { pathname } = useLocation();
@@ -29,6 +30,31 @@ const Menu = () => {
             </Link>
           </li>
         ))}
+        <li className="nav-item dropdown mx-2" style={{ opacity: 1 }}>
+          <span
+            className="nav-link position-relative"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <span
+              className="material-icons"
+              style={{ color: notify.data.length > 0 ? 'crimson' : '' }}
+            >
+              favorite
+            </span>
+
+            <span className="notify_length">{notify.data.length}</span>
+          </span>
+          <div
+            className="dropdown-menu"
+            aria-labelledby="navbarDropdown"
+            style={{ transform: 'translateX(75px)' }}
+          >
+            <NotifyModal />
+          </div>
+        </li>
 
         <li className="nav-item dropdown mx-2" style={{ opacity: 1 }}>
           <span
@@ -45,34 +71,29 @@ const Menu = () => {
               size="medium-avatar"
             />
           </span>
-          <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <Link className="dropdown-item" to={`/profile/${auth.user._id}`}>
-                Profile
-              </Link>
-            </li>
-            <li>
-              <label
-                htmlFor="theme"
-                className="dropdown-item"
-                onClick={() => dispatch({ type: TYPES.THEME, payload: !theme })}
-              >
-                {theme ? 'Light mode' : 'Dark mode'}
-              </label>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <Link
-                className="dropdown-item"
-                to="/"
-                onClick={() => dispatch(logout())}
-              >
-                Logout
-              </Link>
-            </li>
-          </ul>
+          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+            <Link className="dropdown-item" to={`/profile/${auth.user._id}`}>
+              Profile
+            </Link>
+
+            <label
+              htmlFor="theme"
+              className="dropdown-item"
+              onClick={() => dispatch({ type: TYPES.THEME, payload: !theme })}
+            >
+              {theme ? 'Light mode' : 'Dark mode'}
+            </label>
+
+            <div className="dropdown-divider"></div>
+
+            <Link
+              className="dropdown-item"
+              to="/"
+              onClick={() => dispatch(logout())}
+            >
+              Logout
+            </Link>
+          </div>
         </li>
       </ul>
     </div>
