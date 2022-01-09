@@ -1,6 +1,7 @@
 import { getDataAPI, patchDataAPI } from '../../utils/fetchData';
 import { imageUpload } from '../../utils/imageUpload';
 import { TYPES, DeleteData } from './_types';
+import { createNotify, removeNotify } from './notifyAction';
 
 export const PROFILE_TYPES = {
   LOADING: 'LOADING_PROFILE',
@@ -127,6 +128,16 @@ export const follow =
       );
       // Socket
       socket.emit('follow', res.data.newUser);
+
+      // Notify
+      const msg = {
+        id: auth.user._id,
+        text: 'has started to follow you.',
+        recipients: [newUser._id],
+        url: `/profile/${auth.user._id}`,
+      };
+
+      dispatch(createNotify({ msg, auth, socket }));
     } catch (err) {
       dispatch({
         type: TYPES.ALERT,
@@ -176,6 +187,16 @@ export const unfollow =
       );
       // Socket
       socket.emit('unFollow', res.data.newUser);
+
+      // Notify
+      const msg = {
+        id: auth.user._id,
+        text: 'has started to follow you.',
+        recipients: [newUser._id],
+        url: `/profile/${auth.user._id}`,
+      };
+
+      dispatch(removeNotify({ msg, auth, socket }));
     } catch (err) {
       dispatch({
         type: TYPES.ALERT,
