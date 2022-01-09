@@ -13,7 +13,20 @@ const notifyReducer = (state = initialState, action) => {
         ...state,
         data: action.payload,
       };
-    default:
+    case NOTIFY_TYPES.CREATE_NOTIFY:
+      return {
+        ...state,
+        data: [action.payload, ...state.data],
+      };
+    case NOTIFY_TYPES.REMOVE_NOTIFY:
+      return {
+        ...state,
+        data: state.data.filter(
+          (item) =>
+            item.id !== action.payload.id || item.url !== action.payload.url
+        ),
+      };
+    default: 
       return state;
   }
 };
