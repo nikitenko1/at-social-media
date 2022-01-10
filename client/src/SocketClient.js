@@ -116,7 +116,7 @@ const SocketClient = () => {
   return (
     <>
       {/* style={{ display: 'none'  }} */}
-      <audio controls ref={audioRef}>
+      <audio controls ref={audioRef} style={{ display: 'none' }}>
         <source src={audiobell} type="audio/mp3" />
       </audio>
     </>
