@@ -1,6 +1,6 @@
 import { TYPES } from '../redux/actions/_types';
 import { useDispatch, useSelector } from 'react-redux';
-
+import Icons from './Icons';
 import { useState, useRef, useEffect } from 'react';
 import { createPost, updatePost } from '../redux/actions/postAction';
 
@@ -31,11 +31,13 @@ const StatusModal = () => {
 
     files.forEach((file) => {
       if (!file) return (err = 'File does not exist.');
-      if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-        return (err = 'Image format is invalid.');
+      // if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      if (file.size > 1024 * 1024 * 5) {
+        return (err = 'The largest size of images is 5mb.');
       }
       return newImages.push(file);
     });
+
     if (err)
       dispatch({
         type: TYPES.ALERT,
@@ -108,6 +110,28 @@ const StatusModal = () => {
       payload: false,
     });
   };
+
+  const imageShow = (src) => {
+    return (
+      <img
+        className="img-thumbnail"
+        src={src}
+        alt="images"
+        style={{ filter: theme ? 'invert(1)' : 'invert(-1)' }}
+      />
+    );
+  };
+  const videoShow = (src) => {
+    return (
+      <video
+        controls
+        className="img-thumbnail"
+        src={src}
+        alt="video"
+        style={{ filter: theme ? 'invert(1)' : 'invert(-1)' }}
+      />
+    );
+  };
   return (
     <div className="status_modal">
       <form onSubmit={handleSubmit}>
@@ -125,22 +149,35 @@ const StatusModal = () => {
             value={content}
             placeholder={`${auth.user.username}, what are you thinking?`}
             onChange={(e) => setContent(e.target.value)}
+            style={{
+              filter: theme ? 'invert(1)' : 'invert(0)',
+              color: theme ? 'white' : '#111',
+              background: theme ? 'rgba(0,0,0,.03)' : '',
+            }}
           />
+          {/*  */}
+          <div className="d-flex justify-content-end">
+            <Icons setContent={setContent} content={content} theme={theme} />
+          </div>
+          {/*  */}
           <div className="show_images">
             {images.map((img, index) => (
               <div key={index} id="file_img">
-                <img
-                  className="img-thumbnail"
-                  src={
-                    img.camera
-                      ? img.camera
-                      : img.url
-                      ? img.url
-                      : URL.createObjectURL(img)
-                  }
-                  alt="images"
-                  style={{ filter: theme ? 'invert(1)' : 'invert(-1)' }}
-                />
+                {img.camera ? (
+                  imageShow(img.camera)
+                ) : img.url ? (
+                  <>
+                    {img.url.match(/video/i)
+                      ? videoShow(img.url)
+                      : imageShow(img.url)}
+                  </>
+                ) : (
+                  <>
+                    {img.type.match(/video/i)
+                      ? videoShow(URL.createObjectURL(img))
+                      : imageShow(URL.createObjectURL(img))}
+                  </>
+                )}
                 <span onClick={() => deleteImages(index)}>&times;</span>
               </div>
             ))}

@@ -6,9 +6,9 @@ import { getDataAPI } from '../../utils/fetchData';
 import { useSelector, useDispatch } from 'react-redux';
 import { POST_TYPES } from '../../redux/actions/postAction';
 
-const Posts = ({ homePosts }) => {
+const Posts = () => {
   const [load, setLoad] = useState(false);
-  const { auth } = useSelector((state) => state);
+  const { auth, homePosts, theme } = useSelector((state) => state);
 
   const dispatch = useDispatch();
   const handleLoadMore = async () => {
@@ -25,7 +25,7 @@ const Posts = ({ homePosts }) => {
   return (
     <div className="posts">
       {homePosts.posts.map((post) => (
-        <PostCard key={post._id} post={post} />
+        <PostCard key={post._id} post={post} theme={theme} />
       ))}
 
       {load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />}

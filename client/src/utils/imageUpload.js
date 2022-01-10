@@ -24,7 +24,7 @@ export const imageUpload = async (images) => {
 
     formData.append('upload_preset', process.env.REACT_APP_C_UPDATE_PRESET);
     formData.append('cloud_name', process.REACT_APP_C_NAME);
-
+    // REACT_APP_C_API_BASE_URL =  https://api.cloudinary.com/v1_1/dvp..../upload
     const res = await fetch(process.env.REACT_APP_C_API_BASE_URL, {
       method: 'POST',
       body: formData,

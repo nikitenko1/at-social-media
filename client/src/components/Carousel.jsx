@@ -7,26 +7,36 @@ const Carousel = ({ images, id }) => {
   };
   return (
     <div id={`image${id}`} className="carousel slide" data-bs-ride="carousel">
-      <div className="carousel-indicators">
+      <div class="carousel-indicators">
         {images.map((img, index) => (
           <button
             key={index}
             type="button"
             data-bs-target={`#image${id}`}
             data-bs-slide-to={index}
-            className="active"
+            className={`${isActive(index)}`}
           ></button>
         ))}
       </div>
       <div className="carousel-inner">
         {images.map((img, index) => (
           <div key={index} className={`carousel-item ${isActive(index)}`}>
-            <img
-              src={img.url}
-              className="d-block w-100"
-              alt={img.url}
-              style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}
-            />
+            {img.url.match(/video/i) ? (
+              <video
+                controls
+                src={img.url}
+                className="d-block w-100"
+                alt={img.url}
+                style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}
+              />
+            ) : (
+              <img
+                src={img.url}
+                className="d-block w-100"
+                alt={img.url}
+                style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -49,6 +59,7 @@ const Carousel = ({ images, id }) => {
             type="button"
             data-bs-target={`#image${id}`}
             data-bs-slide="next"
+            style={{ width: '5%' }}
           >
             <span
               className="carousel-control-next-icon"
