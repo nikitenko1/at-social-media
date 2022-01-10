@@ -1,10 +1,18 @@
 import { TYPES } from './_types';
-import { postDataAPI, deleteDataAPI, getDataAPI } from '../../utils/fetchData';
+import {
+  postDataAPI,
+  deleteDataAPI,
+  getDataAPI,
+  patchDataAPI,
+} from '../../utils/fetchData';
 
 export const NOTIFY_TYPES = {
   GET_NOTIFIES: 'GET_NOTIFIES',
   CREATE_NOTIFY: 'CREATE_NOTIFY',
   REMOVE_NOTIFY: 'REMOVE_NOTIFY',
+  UPDATE_NOTIFY: 'UPDATE_NOTIFY',
+  UPDATE_SOUND: 'UPDATE_SOUND',
+  DELETE_ALL_NOTIFY: 'DELETE_ALL_NOTIFY',
 };
 
 export const createNotify =
@@ -12,7 +20,7 @@ export const createNotify =
   async (dispatch) => {
     try {
       const res = await postDataAPI('notify', msg, auth.token);
-      console.log(res);
+
       // Socket
       socket.emit('createNotify', {
         ...res.data.notify,
@@ -50,6 +58,35 @@ export const getNotifies = (token) => async (dispatch) => {
     const res = await getDataAPI('notify', token);
 
     dispatch({ type: NOTIFY_TYPES.GET_NOTIFIES, payload: res.data.notifies });
+  } catch (err) {
+    dispatch({
+      type: TYPES.ALERT,
+      payload: { error: err.response.data.msg },
+    });
+  }
+};
+
+export const isReadNotify =
+  ({ msg, auth }) =>
+  async (dispatch) => {
+    dispatch({
+      type: NOTIFY_TYPES.UPDATE_NOTIFY,
+      payload: { ...msg, isRead: true },
+    });
+    try {
+      await patchDataAPI(`isReadNotify/${msg._id}`, null, auth.token);
+    } catch (err) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };
+
+export const deleteAllNotifies = (token) => async (dispatch) => {
+  dispatch({ type: NOTIFY_TYPES.DELETE_ALL_NOTIFY, payload: [] });
+  try {
+    await deleteDataAPI('deleteAllNotify', token);
   } catch (err) {
     dispatch({
       type: TYPES.ALERT,
