@@ -34,7 +34,7 @@ const Icons = ({ setContent, content, theme }) => {
       style={{ opacity: 1, filter: theme ? 'invert(1)' : 'invert(0)' }}
     >
       <span
-        className="nav-link position-relative"
+        className="nav-link position-relative px-1"
         id="navbarDropdown"
         role="button"
         data-bs-toggle="dropdown"
