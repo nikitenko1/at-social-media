@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import UserCard from '../UserCard';
 import { useSelector, useDispatch } from 'react-redux';
 import { TYPES } from '../../redux/actions/_types';
 import { getDataAPI } from '../../utils/fetchData';
 import { useHistory, useParams } from 'react-router-dom';
-import { addUser } from '../../redux/actions/messageAction';
+import {
+  getConversations,
+  MESSAGE_TYPES,
+} from '../../redux/actions/messageAction';
 //
 const LeftSide = () => {
   const { auth, message } = useSelector((state) => state);
@@ -14,18 +17,18 @@ const LeftSide = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!search) return setSearchUsers([]);
+
     try {
       const res = await getDataAPI(`search?username=${search}`, auth.token);
       setSearchUsers(res.data.users);
     } catch (err) {
       dispatch({
         type: TYPES.ALERT,
-        payload: {
-          error: err.response.data.msg,
-        },
+        payload: { error: err.response.data.msg },
       });
     }
   };
@@ -33,7 +36,10 @@ const LeftSide = () => {
   const handleAddUser = (user) => {
     setSearch('');
     setSearchUsers([]);
-    dispatch(addUser({ user, message }));
+    dispatch({
+      type: MESSAGE_TYPES.ADD_USER,
+      payload: { ...user, text: '', media: [] },
+    });
     return history.push(`/message/${user._id}`);
   };
 
@@ -41,6 +47,12 @@ const LeftSide = () => {
     if (id === user._id) return 'active';
     return '';
   };
+
+  useEffect(() => {
+    if (message.firstLoad) return;
+    dispatch(getConversations({ auth }));
+  }, [dispatch, auth, message.firstLoad]);
+
   return (
     <>
       <form className="message_header" onSubmit={handleSearch}>
@@ -63,7 +75,7 @@ const LeftSide = () => {
                 className={`message_user ${isActive(user)}`}
                 onClick={() => handleAddUser(user)}
               >
-                <UserCard user={user} msg={true}>
+                <UserCard user={user}>
                   <i className="fas fa-circle" />
                 </UserCard>
               </div>
@@ -77,7 +89,9 @@ const LeftSide = () => {
                 className={`message_user ${isActive(user)}`}
                 onClick={() => handleAddUser(user)}
               >
-                <UserCard user={user} />
+                <UserCard user={user} msg={true}>
+                  <i className="fas fa-circle" />
+                </UserCard>
               </div>
             ))}
           </>
