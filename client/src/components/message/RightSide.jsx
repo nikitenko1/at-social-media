@@ -7,7 +7,11 @@ import Icons from '../Icons';
 import { TYPES } from '../../redux/actions/_types';
 import { imageShow, videoShow } from '../../utils/mediaShow';
 import { imageUpload } from '../../utils/imageUpload';
-import { addMessage } from '../../redux/actions/messageAction';
+import {
+  addMessage,
+  getMessages,
+  MESSAGE_TYPES,
+} from '../../redux/actions/messageAction';
 import LoadIcon from '../../images/loading.gif';
 //
 const RightSide = () => {
@@ -76,6 +80,15 @@ const RightSide = () => {
     setLoadMedia(false);
     dispatch(addMessage({ msg, auth, socket }));
   };
+
+  useEffect(() => {
+    if (id) {
+      const getMessagesData = async () => {
+        await dispatch(getMessages({ auth, id }));
+      };
+      getMessagesData();
+    }
+  }, [id, dispatch, auth]);
   return (
     <>
       <div className="message_header">
