@@ -1,5 +1,5 @@
 import { MESSAGE_TYPES } from '../actions/messageAction';
-import { EditData } from '../actions/_types';
+import { EditData, DeleteData } from '../actions/_types';
 
 const initialState = {
   users: [],
@@ -70,8 +70,15 @@ const messageReducer = (state = initialState, action) => {
         data: state.data.map((item) =>
           item._id === action.payload._id
             ? { ...item, messages: action.payload.newData }
-            : item 
+            : item
         ),
+      };
+
+    case MESSAGE_TYPES.DELETE_CONVERSATION:
+      return {
+        ...state,
+        users: DeleteData(state.users, action.payload),
+        data: DeleteData(state.data, action.payload),
       };
     default:
       return state;

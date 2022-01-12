@@ -7,7 +7,7 @@ const Carousel = ({ images, id }) => {
   };
   return (
     <div id={`image${id}`} className="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
+      <div className="carousel-indicators">
         {images.map((img, index) => (
           <button
             key={index}

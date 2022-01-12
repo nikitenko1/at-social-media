@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import UserCard from '../UserCard';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import MsgDisplay from './MsgDisplay';
 import Icons from '../Icons';
@@ -10,6 +10,7 @@ import { imageShow, videoShow } from '../../utils/mediaShow';
 import { imageUpload } from '../../utils/imageUpload';
 import {
   addMessage,
+  deleteConversation,
   getMessages,
   loadMoreMessages,
 } from '../../redux/actions/messageAction';
@@ -32,6 +33,8 @@ const RightSide = () => {
   const [result, setResult] = useState(9);
   const [page, setPage] = useState(0);
   const [isLoadMore, setIsLoadMore] = useState(0);
+
+  const history = useHistory();
 
   useEffect(() => {
     const newData = message.data.find((item) => item._id === id);
@@ -149,13 +152,20 @@ const RightSide = () => {
     // eslint-disable-next-line
   }, [isLoadMore]);
 
+  const handleDelteConversation = () => {
+    dispatch(deleteConversation({ auth, id }));
+    return history.push('/message');
+  };
   //
   return (
     <>
-      <div className="message_header">
+      <div className="message_header" style={{ cursor: 'pointer' }}>
         {user.length !== 0 && (
           <UserCard user={user}>
-            <i className="fas fa-trash text-danger  " />
+            <i
+              className="fas fa-trash text-danger"
+              onClick={handleDelteConversation}
+            />
           </UserCard>
         )}
       </div>
