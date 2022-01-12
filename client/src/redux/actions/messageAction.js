@@ -8,6 +8,7 @@ export const MESSAGE_TYPES = {
   GET_MESSAGES: 'GET_MESSAGES',
   UPDATE_MESSAGES: 'UPDATE_MESSAGES',
   DELETE_MESSAGES: 'DELETE_MESSAGES',
+  DELETE_CONVERSATION: 'DELETE_CONVERSATION',
 };
 
 export const addMessage =
@@ -113,6 +114,23 @@ export const deleteMessages =
     });
     try {
       await deleteDataAPI(`message/${msg._id}`, auth.token);
+    } catch (err) {
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: err.response.data.msg },
+      });
+    }
+  };
+
+export const deleteConversation =
+  ({ auth, id }) =>
+  async (dispatch) => {
+    dispatch({
+      type: MESSAGE_TYPES.DELETE_CONVERSATION,
+      payload: id,
+    });
+    try {
+      await deleteDataAPI(`conversation/${id}`, auth.token);
     } catch (err) {
       dispatch({
         type: TYPES.ALERT,
