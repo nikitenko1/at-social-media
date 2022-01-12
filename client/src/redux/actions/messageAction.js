@@ -17,6 +17,7 @@ export const addMessage =
   ({ msg, auth, socket }) =>
   async (dispatch) => {
     dispatch({ type: MESSAGE_TYPES.ADD_MESSAGE, payload: msg });
+    socket.emit('addMessage', msg);
     try {
       await postDataAPI('message', msg, auth.token);
     } catch (err) {
@@ -28,10 +29,13 @@ export const addMessage =
   };
 
 export const getConversations =
-  ({ auth }) =>
+  ({ auth, page = 1 }) =>
   async (dispatch) => {
     try {
-      const res = await getDataAPI('conversations', auth.token);
+      const res = await getDataAPI(
+        `conversations?limit=${page * 9}`,
+        auth.token
+      );
 
       let newArr = [];
       res.data.conversations.forEach((item) => {
@@ -58,10 +62,13 @@ export const getConversations =
     }
   };
 export const getMessages =
-  ({ auth, id }) =>
+  ({ auth, id, page = 1 }) =>
   async (dispatch) => {
     try {
-      const res = await getDataAPI(`message/${id}`, auth.token);
+      const res = await getDataAPI(
+        `message/${id}?limit=${page * 9}`,
+        auth.token
+      );
       dispatch({
         type: MESSAGE_TYPES.GET_MESSAGES,
         payload: res.data,

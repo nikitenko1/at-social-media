@@ -8,6 +8,7 @@ import {
   getConversations,
   MESSAGE_TYPES,
 } from '../../redux/actions/messageAction';
+import { useRef } from 'react';
 //
 const LeftSide = () => {
   const { auth, message } = useSelector((state) => state);
@@ -17,6 +18,9 @@ const LeftSide = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id } = useParams();
+
+  const pageEnd = useRef();
+  const [page, setPage] = useState(0);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -53,6 +57,26 @@ const LeftSide = () => {
     dispatch(getConversations({ auth }));
   }, [dispatch, auth, message.firstLoad]);
 
+  // Load More
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((p) => p + 1);
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+    observer.observe(pageEnd.current);
+  }, [setPage]);
+
+  useEffect(() => {
+    if (message.resultUsers >= (page - 1) * 9 && page > 1) {
+      dispatch(getConversations({ auth, page }));
+    }
+  }, [message.resultUsers, auth, page, dispatch]);
   return (
     <>
       <form className="message_header" onSubmit={handleSearch}>
@@ -96,6 +120,14 @@ const LeftSide = () => {
             ))}
           </>
         )}
+        <button
+          ref={pageEnd}
+          style={{
+            opacity: 0.1,
+          }}
+        >
+          Load More
+        </button>
       </div>
     </>
   );

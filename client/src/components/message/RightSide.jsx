@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import UserCard from '../UserCard';
 import { useParams } from 'react-router-dom';
@@ -24,11 +25,22 @@ const RightSide = () => {
   const [media, setMedia] = useState([]);
   const [loadMedia, setLoadMedia] = useState(false);
 
+  const refDisplay = useRef();
+  const pageEnd = useRef();
+  const [page, setPage] = useState(0);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const newData = message.data.filter(
+      (item) => item.sender === auth.user._id || item.sender === id
+    );
+    setData(newData);
+    setPage(1);
+  }, [auth.user._id, id, message.data]);
+
   useEffect(() => {
     const newUser = message.users.find((user) => user._id === id);
-    if (newUser) {
-      setUser(newUser);
-    }
+    if (newUser) setUser(newUser);
   }, [message.users, id]);
 
   const handleChangeMedia = (e) => {
@@ -78,17 +90,66 @@ const RightSide = () => {
       createdAt: new Date().toISOString(),
     };
     setLoadMedia(false);
-    dispatch(addMessage({ msg, auth, socket }));
+    await dispatch(addMessage({ msg, auth, socket }));
+    if (refDisplay.current) {
+      refDisplay.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    }
   };
 
   useEffect(() => {
     if (id) {
       const getMessagesData = async () => {
+        dispatch({
+          type: MESSAGE_TYPES.GET_MESSAGES,
+          payload: { messages: [] },
+        });
+
         await dispatch(getMessages({ auth, id }));
+
+        if (refDisplay.current) {
+          refDisplay.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+          });
+        }
       };
       getMessagesData();
     }
   }, [id, dispatch, auth]);
+
+  // Load More
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((p) => p + 1);
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+    observer.observe(pageEnd.current);
+  }, [setPage]);
+
+  useEffect(() => {
+    if (message.resultData >= (page - 1) * 9 && page > 1) {
+      dispatch(getMessages({ auth, id, page }));
+    }
+  }, [message.resultData, auth, id, page, dispatch]);
+
+  useEffect(() => {
+    if (refDisplay.current) {
+      refDisplay.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    }
+  }, [text]);
+  //
   return (
     <>
       <div className="message_header">
@@ -102,8 +163,19 @@ const RightSide = () => {
         className="chat_container"
         style={{ height: media.length > 0 ? 'calc(100% - 180px)' : '' }}
       >
-        <div className="chat_display">
-          {message.data.map((msg, index) => (
+        <div className="chat_display" ref={refDisplay}>
+          <button
+            style={{
+              marginTop: '-25px',
+              opacity: 0.1,
+            }}
+            ref={pageEnd}
+          >
+            Load more
+          </button>
+
+          {/* {message.data.map((msg, index) => ( */}
+          {data.map((msg, index) => (
             <div key={index}>
               {msg.sender !== auth.user._id && (
                 <div className="chat_row other_message">
