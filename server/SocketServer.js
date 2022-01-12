@@ -67,7 +67,7 @@ const SocketServer = (socket) => {
     user && socket.to(`${user.socketId}`).emit('unFollowToClient', newUser);
   });
 
-  // Notify Create 
+  // Notify Create
   socket.on('createNotify', (msg) => {
     const clients = users.filter((user) => msg.recipients.includes(user.id));
     if (clients.length > 0) {
@@ -77,7 +77,7 @@ const SocketServer = (socket) => {
     }
   });
 
-  // Notify Remove 
+  // Notify Remove
   socket.on('removeNotify', (msg) => {
     const clients = users.filter((user) => msg.recipients.includes(user.id));
     if (clients.length > 0) {
@@ -85,6 +85,12 @@ const SocketServer = (socket) => {
         socket.to(`${client.socketId}`).emit('removeNotifyToClient', msg);
       });
     }
+  });
+
+  // Messages
+  socket.on('addMessage', (msg) => {
+    const user = users.find((user) => user.id === msg.recipient);
+    user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg);
   });
 };
 
