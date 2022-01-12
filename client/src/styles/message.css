@@ -183,3 +183,18 @@
   border: 1px solid #ddd;
   border-radius: 14px 14px 14px 0;
 }
+.you_content {
+  position: relative;
+}
+.you_content .fa-trash {
+  position: absolute;
+  top: 50%;
+  left: -15px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0;
+}
+.you_content:hover .fa-trash {
+  opacity: 1;
+}
