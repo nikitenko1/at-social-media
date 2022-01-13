@@ -11,7 +11,7 @@ import {
 import { useRef } from 'react';
 //
 const LeftSide = () => {
-  const { auth, message } = useSelector((state) => state);
+  const { auth, message, online } = useSelector((state) => state);
   const [search, setSearch] = useState('');
   const [searchUsers, setSearchUsers] = useState([]);
 
@@ -77,6 +77,14 @@ const LeftSide = () => {
       dispatch(getConversations({ auth, page }));
     }
   }, [message.resultUsers, auth, page, dispatch]);
+
+  // Check Offline/Online Users
+  useEffect(() => {
+    if (message.firstLoad) {
+      dispatch({ type: MESSAGE_TYPES.CHECK_ONLINE_OFFLINE, payload: online });
+    }
+  }, [dispatch, online, message.firstLoad]);
+  //
   return (
     <>
       <form className="message_header" onSubmit={handleSearch}>
@@ -114,7 +122,13 @@ const LeftSide = () => {
                 onClick={() => handleAddUser(user)}
               >
                 <UserCard user={user} msg={true}>
-                  <i className="fas fa-circle" />
+                  {user.online ? (
+                    <i className="fas fa-circle text-success" />
+                  ) : (
+                    auth.user.following.find(
+                      (item) => item._id === user._id
+                    ) && <i className="fas fa-circle" />
+                  )}
                 </UserCard>
               </div>
             ))}

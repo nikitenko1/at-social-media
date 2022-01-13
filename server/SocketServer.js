@@ -2,15 +2,37 @@ let users = [];
 
 const SocketServer = (socket) => {
   // Connect - Disconnect
-  socket.on('joinUser', (id) => {
+  socket.on('joinUser', (user) => {
+    // users: [
+    //   { id: '61dec823f40e6604acf1048b',
+    //     socketId: 'epnX727VGV6dxjOBAAAF',
+    //     followers: [ [Object], [Object] ] }
+    // ]
     users.push({
-      id,
+      id: user._id,
       socketId: socket.id,
+      followers: user.followers,
     });
-    //  console.log(users);
   });
 
   socket.on('disconnect', () => {
+    // data: {id: '61dec823f40e6604acf1048b',
+    // socketId: 'n7K5UmuQ9MB96MYSAAAF',
+    // followers: [
+    // { _id: '61dec136ae0c4dd8dcc7d740',}
+    const data = users.find((user) => user.socketId === socket.id);
+    if (data) {
+      const clients = users.filter((user) =>
+        data.followers.find((item) => item._id === user.id)
+      );
+
+      if (clients.length > 0) {
+        clients.forEach((client) => {
+          socket.to(`${client.socketId}`).emit('CheckUserOffline', data.id);
+        });
+      }
+    }
+
     users = users.filter((user) => user.socketId !== socket.id);
   });
 
@@ -91,6 +113,31 @@ const SocketServer = (socket) => {
   socket.on('addMessage', (msg) => {
     const user = users.find((user) => user.id === msg.recipient);
     user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg);
+  });
+  //
+
+  // Check user Online/Offline
+  socket.on('checkUserOnline', (data) => {
+    // following: [{ id: '61dec136ae0c4dd8dcc7d740', socketId: 'IoAfV97td1zXt7P2AAAF' } ]
+    const following = users.filter((user) =>
+      data.following.find((item) => item._id === user.id)
+    );
+    socket.emit('checkUserOnlineToMe', following);
+
+    // followers: [{ _id: '61dec136ae0c4dd8dcc7d740', fullname: 'jane smith',
+    const clients = users.filter((user) =>
+      data.followers.find((item) => item._id === user.id)
+    );
+
+    if (clients.length > 0) {
+      clients.forEach((client) => {
+        socket
+          .to(`${client.socketId}`)
+          .emit('checkUserOnlineToClient', data._id);
+      });
+    }
+
+    // _id: '61dec823f40e6604acf1048b', fullname: 'sam smith '
   });
 };
 
