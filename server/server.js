@@ -3,7 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-
+const http = require('http');
+const socketio = require('socket.io');
 //
 const SocketServer = require('./SocketServer');
 //
@@ -14,8 +15,8 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 // Socket
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const server = http.createServer(app);
+const io = socketio(server);
 
 io.on('connection', (socket) => {
   SocketServer(socket);

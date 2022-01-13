@@ -20,13 +20,13 @@ const spawnNotification = (body, icon, url, title) => {
 const SocketClient = () => {
   const audioRef = useRef();
 
-  const { auth, socket, notify } = useSelector((state) => state);
+  const { auth, socket, notify, online } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   // joinUser
   useEffect(() => {
-    socket.emit('joinUser', auth.user._id);
-  }, [socket, auth.user._id]);
+    socket.emit('joinUser', auth.user);
+  }, [socket, auth.user]);
 
   // likes
   useEffect(() => {
@@ -114,18 +114,66 @@ const SocketClient = () => {
     return () => socket.off('removeNotifyToClient');
   }, [socket, dispatch]);
 
-  // message add
+  // Message
   useEffect(() => {
     socket.on('addMessageToClient', (msg) => {
       dispatch({
         type: MESSAGE_TYPES.ADD_MESSAGE,
         payload: msg,
       });
+      dispatch({
+        type: MESSAGE_TYPES.ADD_USER,
+        payload: { ...msg.user, text: msg.text, media: msg.media },
+      });
     });
 
     return () => socket.off('addMessageToClient');
   }, [socket, dispatch]);
 
+  // Check user Online/Offline
+  useEffect(() => {
+    socket.emit('checkUserOnline', auth.user);
+
+    return () => socket.off('checkUserOnline');
+  }, [socket, auth.user]);
+
+  // Check User Online / Offline
+  useEffect(() => {
+    socket.emit('checkUserOnline', auth.user);
+  }, [socket, auth.user]);
+
+  useEffect(() => {
+    socket.on('checkUserOnlineToMe', (data) => {
+      data.forEach((item) => {
+        if (!online.includes(item.id)) {
+          dispatch({ type: TYPES.ONLINE, payload: item.id });
+        }
+      });
+      console.log(data);
+    });
+
+    return () => socket.off('checkUserOnlineToMe');
+  }, [socket, dispatch, online]);
+
+  useEffect(() => {
+    socket.on('checkUserOnlineToClient', (id) => {
+      if (!online.includes(id)) {
+        dispatch({ type: TYPES.ONLINE, payload: id });
+      }
+    });
+
+    return () => socket.off('checkUserOnlineToClient');
+  }, [socket, dispatch, online]);
+
+  // Check Offline
+  useEffect(() => {
+    socket.on('CheckUserOffline', (id) => {
+      dispatch({ type: TYPES.OFFLINE, payload: id });
+    });
+
+    return () => socket.off('CheckUserOffline');
+  }, [socket, dispatch]);
+  //
   return (
     <>
       {/* style={{ display: 'none'  }} */}
