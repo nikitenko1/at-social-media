@@ -8,6 +8,7 @@ export const TYPES = {
   ONLINE: 'ONLINE',
   OFFLINE: 'OFFLINE',
   CALL: 'CALL',
+  PEER: 'PEER',
 };
 
 export const EditData = (data, id, post) => {

@@ -5,6 +5,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 const socketio = require('socket.io');
+const { PeerServer } = require('peer');
 //
 const SocketServer = require('./SocketServer');
 //
@@ -21,6 +22,10 @@ const io = socketio(server);
 io.on('connection', (socket) => {
   SocketServer(socket);
 });
+
+// Create Peer server
+PeerServer({ port: 3001, path: '/' });
+
 // Routes
 app.use('/api', require('./routes/authRouter'));
 app.use('/api', require('./routes/userRouter'));

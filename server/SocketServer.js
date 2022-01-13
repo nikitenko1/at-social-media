@@ -1,4 +1,10 @@
 let users = [];
+const EditData = (data, id, call) => {
+  const newData = data.map((item) =>
+    item.id === id ? { ...item, call } : item
+  );
+  return newData;
+};
 
 const SocketServer = (socket) => {
   // Connect - Disconnect
@@ -139,6 +145,58 @@ const SocketServer = (socket) => {
 
     // _id: '61dec823f40e6604acf1048b', fullname: 'sam smith '
   });
+
+  // Call
+
+  socket.on('callUser', (data) => {
+    users = EditData(users, data.sender, data.recipient);
+
+    const client = users.find((user) => user.id === data.recipient);
+    if (client) {
+      if (client.call) {
+        users = EditData(users, data.sender, null);
+        socket.emit('userBusy', data);
+      } else {
+        users = EditData(users, data.recipient, data.sender);
+        socket.to(`${client.socketId}`).emit('callUserToClient', data);
+      }
+    }
+  });
+
+  socket.on('endCall', (data) => {
+    const client = users.find((user) => user.id === data.sender);
+ 
+    if (client) {
+      socket.to(`${client.socketId}`).emit('endCallToClient', data);
+      users = EditData(users, client.id, null);
+      if (client.call) {
+        const clientCall = users.find((user) => user.id === client.call);
+        clientCall &&
+          socket.to(`${clientCall.socketId}`).emit('endCallToClient', data);
+        users = EditData(users, client.call, null);
+      }
+    }
+
+    // old: [
+    //   {
+    //     id: '61dec136ae0c4dd8dcc7d740',
+    //     socketId: 'D5yY8qgEh-G8LzmNAAAD',
+    //     followers: [Array],
+    //     call: '61dec823f40e6604acf1048b'
+    //   }
+    // ]
+
+    // console.log({ new: users });
+    // new: [
+    //   {
+    //     id: '61dec136ae0c4dd8dcc7d740',
+    //     socketId: 'D5yY8qgEh-G8LzmNAAAD',
+    //     followers: [Array],
+    //     call: null
+    //   }
+    // ]
+  });
+  //
 };
 
 module.exports = SocketServer;

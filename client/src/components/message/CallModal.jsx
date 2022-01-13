@@ -10,7 +10,7 @@ const CallModal = () => {
 
   const [answer, setAnswer] = useState(false);
 
-  const { call } = useSelector((state) => state);
+  const { auth, peer, call, socket } = useSelector((state) => state);
   const dispatch = useDispatch();
 
   // Setup time
@@ -32,6 +32,7 @@ const CallModal = () => {
   // End Call
   const handleEndCall = () => {
     dispatch({ type: TYPES.CALL, payload: null });
+    socket.emit('endCall', call);
   };
   useEffect(() => {
     if (answer) {
@@ -43,6 +44,15 @@ const CallModal = () => {
       return () => clearTimeout(timer);
     }
   }, [dispatch, answer]);
+
+  useEffect(() => {
+    socket.on('endCallToClient', (data) => {
+      console.log(data);
+      dispatch({ type: TYPES.CALL, payload: null });
+    });
+
+    return () => socket.off('endCallToClient');
+  }, [socket, dispatch]);
 
   //   Answer Call
   const handleAnswer = () => {
@@ -56,13 +66,24 @@ const CallModal = () => {
           <Avatar src={call.avatar} size="super-avatar" />
           <h4>{call.username}</h4>
           <h6>{call.fullname}</h6>
-          <div>
-            {call.video ? (
-              <span>calling video ...</span>
-            ) : (
-              <span>calling audio ...</span>
-            )}
-          </div>
+
+          {answer ? (
+            <div>
+              <span>{mins.toString().length < 2 ? '0' + mins : mins}</span>
+              <span>:</span>
+              <span>
+                {second.toString().length < 2 ? '0' + second : second}
+              </span>
+            </div>
+          ) : (
+            <div>
+              {call.video ? (
+                <span>calling video ...</span>
+              ) : (
+                <span>calling audio ...</span>
+              )}
+            </div>
+          )}
         </div>
         <div className="timer">
           <small>{mins.toString().length < 2 ? '0' + mins : mins}</small>
@@ -73,23 +94,25 @@ const CallModal = () => {
           <span className="material-icons text-danger" onClick={handleEndCall}>
             call_end
           </span>
-          <>
-            {call.video ? (
-              <span
-                className="material-icons text-success"
-                onClick={handleAnswer}
-              >
-                videocam
-              </span>
-            ) : (
-              <span
-                className="material-icons text-success"
-                onClick={handleAnswer}
-              >
-                call
-              </span>
-            )}
-          </>
+          {call.recipient === auth.user._id && !answer && (
+            <>
+              {call.video ? (
+                <span
+                  className="material-icons text-success"
+                  onClick={handleAnswer}
+                >
+                  videocam
+                </span>
+              ) : (
+                <span
+                  className="material-icons text-success"
+                  onClick={handleAnswer}
+                >
+                  call
+                </span>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
