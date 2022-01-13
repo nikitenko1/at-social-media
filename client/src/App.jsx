@@ -18,7 +18,8 @@ import { TYPES } from './redux/actions/_types';
 import SocketClient from './SocketClient';
 import { getNotifies } from './redux/actions/notifyAction';
 import CallModal from './components/message/CallModal';
-
+import Peer from 'peerjs';
+//
 const App = () => {
   const { auth, status, modal, call } = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -57,6 +58,15 @@ const App = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    // const peer = new Peer([id], [options]);
+    const newPeer = new Peer(undefined, {
+      host: '/',
+      port: '3001',
+    });
+    dispatch({ type: TYPES.PEER, payload: newPeer });
+  }, [dispatch]);
 
   return (
     <>
