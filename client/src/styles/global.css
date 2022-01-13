@@ -61,6 +61,8 @@ a {
 @import url('./message.css');
 /* -------- ICONS ---------- */
 @import url('./icons.css');
+/* -------- CALL ---------- */
+@import url('./call_modal.css');
 
 .mode {
   width: 100%;

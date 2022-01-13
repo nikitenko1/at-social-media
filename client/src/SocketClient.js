@@ -149,7 +149,6 @@ const SocketClient = () => {
           dispatch({ type: TYPES.ONLINE, payload: item.id });
         }
       });
-      console.log(data);
     });
 
     return () => socket.off('checkUserOnlineToMe');
