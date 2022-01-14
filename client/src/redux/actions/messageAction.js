@@ -48,6 +48,7 @@ export const getConversations =
               ...cv,
               text: item.text,
               media: item.media,
+              call: item.call,
             });
           }
         });

@@ -1,7 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '../Avatar';
 import { TYPES } from '../../redux/actions/_types';
+import { addMessage } from '../../redux/actions/messageAction';
+import Ring from '../../audio/bestringtones.mp3';
 //
 const CallModal = () => {
   const [hours, setHours] = useState(0);
@@ -36,11 +38,31 @@ const CallModal = () => {
   }, [total]);
 
   // End Call
+  const addCallMessage = useCallback(
+    (call, times, disconnect) => {
+      if (call.recipient !== auth.user._id || disconnect) {
+        const msg = {
+          sender: call.sender,
+          recipient: call.recipient,
+          text: '',
+          media: [],
+          call: { video: call.video, times },
+          createdAt: new Date().toISOString(),
+        };
+        dispatch(addMessage({ msg, auth, socket }));
+      }
+    },
+    [dispatch, auth, socket]
+  );
+
   const handleEndCall = () => {
     if (tracks) {
       tracks.forEach((track) => track.stop());
     }
-    socket.emit('endCall', call);
+    let times = answer ? total : 0;
+    socket.emit('endCall', { ...call, times });
+
+    addCallMessage(call, times);
     dispatch({ type: TYPES.CALL, payload: null });
   };
 
@@ -49,24 +71,25 @@ const CallModal = () => {
       setTotal(0);
     } else {
       const timer = setTimeout(() => {
-        socket.emit('endCall', call);
+        socket.emit('endCall', { ...call, times: 0 });
+        addCallMessage(call, 0);
         dispatch({ type: TYPES.CALL, payload: null });
       }, 15000);
       return () => clearTimeout(timer);
     }
-  }, [dispatch, answer, call, socket]);
+  }, [dispatch, answer, call, socket, addCallMessage]);
 
   useEffect(() => {
     socket.on('endCallToClient', (data) => {
-      console.log(data);
       if (tracks) {
         tracks.forEach((track) => track.stop());
       }
+      addCallMessage(data, data.times);
       dispatch({ type: TYPES.CALL, payload: null });
     });
 
     return () => socket.off('endCallToClient');
-  }, [socket, dispatch, tracks]);
+  }, [socket, dispatch, tracks, addCallMessage]);
 
   // Stream Media
   const openStream = (video) => {
@@ -122,11 +145,39 @@ const CallModal = () => {
       if (tracks) {
         tracks.forEach((track) => track.stop());
       }
+
+      let times = answer ? total : 0;
+
+      addCallMessage(call, times, true);
       dispatch({ type: TYPES.CALL, payload: null });
-      dispatch({ type: TYPES.ALERT, payload: { error: 'User disconnect' } });
+      dispatch({
+        type: TYPES.ALERT,
+        payload: { error: `The ${call.username} disconnect` },
+      });
     });
     return () => socket.off('callerDisconnect');
-  }, [dispatch, tracks, socket]);
+  }, [dispatch, tracks, socket, addCallMessage, answer, call, total]);
+
+  // Play - Pause Audio
+  const playAudio = (newAudio) => {
+    newAudio.play();
+  };
+  const pauseAudio = (newAudio) => {
+    newAudio.pause();
+    newAudio.currentTime = 0;
+  };
+
+  useEffect(() => {
+    let newAudio = new Audio(Ring);
+    if (answer) {
+      pauseAudio(newAudio);
+    } else {
+      playAudio(newAudio);
+    }
+
+    return () => pauseAudio(newAudio);
+  }, [answer]);
+
   //
   return (
     <div className="call_modal">

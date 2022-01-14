@@ -26,6 +26,7 @@ const SocketServer = (socket) => {
     // socketId: 'n7K5UmuQ9MB96MYSAAAF',
     // followers: [
     // { _id: '61dec136ae0c4dd8dcc7d740',}
+
     const data = users.find((user) => user.socketId === socket.id);
     if (data) {
       const clients = users.filter((user) =>
@@ -46,6 +47,7 @@ const SocketServer = (socket) => {
         }
       }
     }
+    ``;
 
     users = users.filter((user) => user.socketId !== socket.id);
   });
@@ -128,7 +130,6 @@ const SocketServer = (socket) => {
     const user = users.find((user) => user.id === msg.recipient);
     user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg);
   });
-  //
 
   // Check user Online/Offline
   socket.on('checkUserOnline', (data) => {
@@ -154,8 +155,7 @@ const SocketServer = (socket) => {
     // _id: '61dec823f40e6604acf1048b', fullname: 'sam smith '
   });
 
-  // Call
-
+  // Call User
   socket.on('callUser', (data) => {
     users = EditData(users, data.sender, data.recipient);
 

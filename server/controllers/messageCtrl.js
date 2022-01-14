@@ -20,27 +20,28 @@ class APIfeatures {
 const messageCtrl = {
   createMessage: async (req, res) => {
     try {
-      const { recipient, text, media } = req.body;
+      const { sender, recipient, text, media, call } = req.body;
 
-      if (!recipient || (!text.trim() && media.length === 0)) return;
+      if (!recipient || (!text.trim() && media.length === 0 && !call)) return;
 
       const newConversation = await Conversations.findOneAndUpdate(
         {
           $or: [
-            { recipients: [req.user._id, recipient] },
-            { recipients: [recipient, req.user._id] },
+            { recipients: [sender, recipient] },
+            { recipients: [recipient, sender] },
           ],
         },
-        { recipients: [req.user._id, recipient], text, media },
+        { recipients: [sender, recipient], text, media, call },
         { new: true, upsert: true }
       );
 
       const newMessage = new Messages({
         conversation: newConversation._id,
-        sender: req.user._id,
-        recipient: recipient,
-        text: text,
-        media: media,
+        sender,
+        recipient,
+        text,
+        media,
+        call,
       });
 
       await newMessage.save();
