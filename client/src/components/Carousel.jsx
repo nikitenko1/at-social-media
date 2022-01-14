@@ -7,7 +7,7 @@ const Carousel = ({ images, id }) => {
   };
   return (
     <div id={`image${id}`} className="carousel slide" data-bs-ride="carousel">
-      <div className ="carousel-indicators">
+      <div className="carousel-indicators">
         {images.map((img, index) => (
           <button
             key={index}
@@ -15,6 +15,7 @@ const Carousel = ({ images, id }) => {
             data-bs-target={`#image${id}`}
             data-bs-slide-to={index}
             className={`${isActive(index)}`}
+            style={{ zIndex: 1 }}
           ></button>
         ))}
       </div>

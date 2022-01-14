@@ -17,6 +17,10 @@
   cursor: pointer;
   font-weight: 600;
 }
+.comment_input .dropdown-menu {
+  transform: translate3d(-120px, -200px, 0px) !important;
+}
+
 /* ------------ Comments ------------ */
 .comment_display {
   padding: 10px 25px;
