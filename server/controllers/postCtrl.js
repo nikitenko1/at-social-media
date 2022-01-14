@@ -92,7 +92,7 @@ const postCtrl = {
   //
   likePost: async (req, res) => {
     try {
-      const post = Posts.findOneAndUpdate({
+      const post = await Posts.find({
         _id: req.params.id,
         likes: req.user._id,
       });
@@ -146,7 +146,7 @@ const postCtrl = {
   getPost: async (req, res) => {
     try {
       const post = await Posts.findById(req.params.id)
-        .populate('user likes', 'avatar username fullname')
+        .populate('user likes', 'avatar username fullname followers')
         .populate({
           path: 'comments',
           populate: {
@@ -167,7 +167,7 @@ const postCtrl = {
   getPostsDiscover: async (req, res) => {
     try {
       const newArr = [...req.user.following, req.user._id];
-      const num = req.query.num || 3;
+      const num = req.query.num || 9;
 
       const posts = await Posts.aggregate([
         { $match: { user: { $nin: newArr } } },
