@@ -198,3 +198,6 @@
 .you_content:hover .fa-trash {
   opacity: 1;
 }
+.chat_input .dropdown-menu {
+  transform: translate3d(-110px, -50px, 0px) !important;
+}

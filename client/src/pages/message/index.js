@@ -7,7 +7,7 @@ const Message = () => {
       <div className="col-md-4 border-end px-0">
         <LeftSide />
       </div>
-      <div className="col-md-8  px-0">
+      <div className="col-md-8  px-0 right_mess">
         <div className="d-flex flex-column justify-content-center align-items-center h-100">
           <i
             className="fab fa-facebook-messenger text-primary"
